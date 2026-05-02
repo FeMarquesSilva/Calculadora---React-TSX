@@ -1,13 +1,14 @@
 import '../styles/calculadora.css'
 import type { buttonItem } from '../interfaces/Calculadora'
-import { use, useState } from 'react'
+import { useState } from 'react'
 import { dividir, multiplicar, somar, subtrair } from '../services/Calculos'
 
 export const Calculadora = () => {
 
     const [visor, setVisor] = useState('')
-    const [calc, setCalc] = useState('')
     const [oper, setOper] = useState('')
+    const [vlrUm, setVlrUM] = useState('')
+    const [vlrDois, setVlrDois] = useState('')
 
     const buttons = [
         { id: 1, label: '7' },
@@ -35,32 +36,86 @@ export const Calculadora = () => {
     const limpar = () => {
         setVisor('')
         setOper('')
-        setCalc('')
+        setVlrUM('')
+        setVlrDois('')
+        return
     }
 
-    const realizarCalculo = (valor: string) => {
+    const realizarCalculo = (primeiroVlr: number, segundoVlr: number) => {
+        let valor: string
+        console.log('Aqui')
+        if (oper === '+') {
+            valor = String(
+                somar(
+                    Number(primeiroVlr),
+                    Number(segundoVlr)
+                )
+            )
+            setOper('')
+            setVlrUM(valor)
+            return valor
+        } else if (oper === '-') {
+            valor = String(
+                subtrair(
+                    Number(primeiroVlr),
+                    Number(segundoVlr)
+                )
+            )
+            setOper('')
+            setVlrUM(valor)
+            return valor
+        } else if (oper === '*') {
+            valor = String(
+                multiplicar(
+                    Number(primeiroVlr),
+                    Number(segundoVlr)
+                )
+            )
+            setOper('')
+            setVlrUM(valor)
+            return valor
+        } else {
+            valor  = String(
+                dividir(
+                    Number(primeiroVlr),
+                    Number(segundoVlr)
+                )
+            )
+            setOper('')
+            setVlrUM(valor)
+            return valor
+        }
+    }
+
+    const validarValor = (valor: string) => {
         let newValor: string
 
-
+        //Definindo os operadores
         if (valor === '+') {
+            setVisor('')
             setOper('+')
             return
         } else if (valor === '-') {
+            setVisor('')
             setOper('-')
             return
         } else if (valor === 'X') {
+            setVisor('')
             setOper('*')
             return
         } else if (valor === '/') {
+            setVisor('')
             setOper('/')
             return
         }
 
+        //Função de Clear;
         if (valor === 'CLEAR') {
             limpar()
             return
         }
 
+        // Função de DEL
         if (valor === 'DEL') {
             if (visor.length === 1) {
                 limpar()
@@ -68,59 +123,40 @@ export const Calculadora = () => {
             } else {
                 newValor = visor.slice(0, -1)
                 setVisor(newValor)
-                setCalc(newValor)
+                if (oper === '') {
+                    setVlrUM(newValor)
+                } else {
+                    setVlrDois(newValor)
+                }
                 return
             }
         }
 
-        if (visor === '') {
+        //Se não for nenhuma função mas sim o primeiro digito, exibo ele no visor apenas e salvo no calc.
+        if (visor === '' && oper === '') {
             setVisor(valor)
-            setCalc(valor)
+            setVlrUM(valor)
             return
+        }
+
+        if (valor !== '='){
+            if (oper === '') {
+                setVisor((prev) => prev + valor)
+                setVlrUM((prev) => prev + valor)
+            } else {
+                setVisor((prev) => prev + valor)
+                setVlrDois((prev) => prev + valor)
+            }
         }
 
         if (valor === '=') {
-            setVisor(calc)
+            console.log("aaqqq", vlrUm, vlrDois)
+            if (vlrUm === '' || vlrDois === '') return
+            setVisor(realizarCalculo(Number(vlrUm), Number(vlrDois)))
+            setVlrDois('')
             return
         }
 
-        if (oper === '+') {
-            setCalc(String(
-                somar(
-                    Number(calc),
-                    Number(valor)
-                )
-            ))
-            setVisor(valor)
-            return
-        } else if (oper === '-') {
-            setCalc(String(
-                subtrair(
-                    Number(calc),
-                    Number(valor)
-                )
-            ))
-            setVisor(valor)
-            return
-        } else if (oper === '*') {
-            setCalc(String(
-                multiplicar(
-                    Number(calc),
-                    Number(valor)
-                )
-            ))
-            setVisor(valor)
-            return
-        } else {
-            setCalc(String(
-                dividir(
-                    Number(calc),
-                    Number(valor)
-                )
-            ))
-            setVisor(valor)
-            return
-        }
     }
 
     return (
@@ -134,7 +170,7 @@ export const Calculadora = () => {
                 </div>
                 <div className='buttons-container'>
                     {buttons.map((item: buttonItem) => (
-                        <button onClick={() => realizarCalculo(item.label)} className='buttons' key={item.id}>
+                        <button onClick={() => validarValor(item.label)} className='buttons' key={item.id}>
                             {item.label}
                         </button>
                     ))}
