@@ -16,30 +16,30 @@ export const Calculadora = () => {
         { id: 6, label: '4' },
         { id: 7, label: '5' },
         { id: 8, label: '6' },
-        { id: 9, label: '1' },
-        { id: 10, label: '2' },
-        { id: 11, label: '3' },
-        { id: 12, label: '+' },
-        { id: 13, label: '-' },
-        { id: 14, label: '0' },
-        { id: 15, label: '00' },
-        { id: 16, label: '.' },
-        { id: 17, label: '=' },
-        { id: 18, label: 'CLEAR' },
+        { id: 9, label: 'X' },
+        { id: 10, label: '/' },
+        { id: 11, label: '1' },
+        { id: 12, label: '2' },
+        { id: 13, label: '3' },
+        { id: 14, label: '+' },
+        { id: 15, label: '-' },
+        { id: 16, label: '0' },
+        { id: 17, label: '00' },
+        { id: 18, label: '.' },
+        { id: 19, label: '=' },
+        { id: 20, label: 'CLEAR' },
     ]
 
     return (
-        <div>
+        <div className='container-all'>
             <header>
                 <h1>Calculadora TSX</h1>
             </header>
             <section className='calculadora-container'>
-                <div className='visor-container'>
-
-                </div>
+                <div className='visor-container' id='visor' />
                 <div className='buttons-container'>
                     {buttons.map((item: buttonItem) => (
-                        <button key={item.id}>
+                        <button className='buttons' key={item.id}>
                             {item.label}
                         </button>
                     ))}
